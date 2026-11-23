@@ -29,6 +29,9 @@ python -m flake8
 python -m pytest
 ```
 
+`pytest` also prints a coverage report and fails if coverage drops below
+100 % (see `pytest.ini`).
+
 ## Deploy
 
 The `Procfile` runs the app with gunicorn, so it can be deployed to any
