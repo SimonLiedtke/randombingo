@@ -21,6 +21,13 @@ pip install -r requirements.txt
 
 Then open http://localhost:5000.
 
+## Tests
+
+```sh
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
 ## Deploy
 
 The `Procfile` runs the app with gunicorn, so it can be deployed to any
