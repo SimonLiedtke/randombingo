@@ -17,4 +17,5 @@ def bingo_from_iterable(values, num_cols=None):
     random.shuffle(filtered_values)
     if num_cols is None:
         num_cols = int(math.sqrt(len(filtered_values)))
-    return grouper(filtered_values, num_cols, '[BLANK]')
+    # missing cells are None (JSON null), so they can't clash with a real value
+    return grouper(filtered_values, num_cols)

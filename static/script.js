@@ -1,21 +1,21 @@
 function table2html(tableData) {
-    var s = "<table class=scrolling-wrapper-flexbox>";
-    var tdTag;
+    // build the DOM with .text() so values are never parsed as HTML
+    var $table = $("<table>").addClass("scrolling-wrapper-flexbox");
     for (let row of tableData) {
-        s += "<tr>";
+        var $tr = $("<tr>").appendTo($table);
         for (let value of row) {
-            tdTag = value == "[BLANK]" ? "<td class=blank>" : "<td>";
-            s += tdTag + value + "</td>";
+            // null marks a padding cell without a value
+            $("<td>").text(value === null ? "" : value)
+                .toggleClass("blank", value === null).appendTo($tr);
         }
-        s += "</tr>";
     }
-    s += "</table>";
-    return s;
+    return $table;
 }
 
 function getCurrentTableData() {
     var data = [];
-    $("td").each(function(index) {
+    // padding cells (.blank) carry no value, so don't send them back
+    $("td:not(.blank)").each(function(index) {
         data.push($(this).text());
     })
     return data;
@@ -25,5 +25,5 @@ function refreshTable(newTable) {
     // remove <table> if it exists
     $("table").remove();
     // create new table after main div
-    $(table2html(newTable)).appendTo("#main");
+    table2html(newTable).appendTo("#main");
 }
