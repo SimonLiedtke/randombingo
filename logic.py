@@ -12,8 +12,10 @@ def grouper(iterable, n, fillvalue=None):
 
 
 def bingo_from_iterable(values, num_cols=None):
-    filtered_values = list(filter(
-        lambda value: value is not None and value.strip(), values))
+    # strip surrounding whitespace (e.g. the newline of file lines, the \r of
+    # textarea lines) and drop empty values
+    filtered_values = [value.strip() for value in values
+                       if value is not None and value.strip()]
     random.shuffle(filtered_values)
     if num_cols is None:
         num_cols = int(math.sqrt(len(filtered_values)))
