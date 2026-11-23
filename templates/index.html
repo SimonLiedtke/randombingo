@@ -12,7 +12,7 @@ $(document).ready(function() {
     function generateBingo() {
         var values = $("#bingovalues").val().split("\n");
         $.post("/custom", {"values": values}, refreshTable);
-        $(this).dialog("close");
+        dialog.dialog("close");
     }
 
     var form;
