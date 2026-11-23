@@ -1,12 +1,10 @@
-import os
+import io
 import os.path
 
 from flask import Flask, request, render_template, jsonify
-from werkzeug.utils import secure_filename
 
 from logic import bingo_from_iterable
 
-UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'.txt', '.csv'}
 
 
@@ -15,7 +13,6 @@ app.config.update(
     title='Random Bingo Generator',
     # limit upload size to 16 Megabyte
     MAX_CONTENT_LENGTH=16 * 1024 * 1024,
-    UPLOAD_FOLDER=UPLOAD_FOLDER,
 )
 
 
@@ -41,12 +38,10 @@ def bingo_by_uploaded_file():
     if file.filename == '':
         return ''
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        abs_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(abs_path)
-        with open(abs_path) as fp:
-            values = bingo_from_iterable(fp)
-        # remove the file from upload directory again, don't store it
-        os.remove(abs_path)
-        return jsonify(list(values))
+        # read the upload straight from the request stream: nothing is
+        # written to disk, so concurrent uploads can't collide
+        with io.TextIOWrapper(file.stream, encoding='utf-8-sig',
+                              errors='replace') as fp:
+            values = list(bingo_from_iterable(fp))
+        return jsonify(values)
     return jsonify([])
