@@ -48,7 +48,8 @@ class TestCustom:
         assert 'error' in response.get_json()
 
     def test_non_json_body(self, client):
-        response = client.post('/custom', data='a\nb', content_type='text/plain')
+        response = client.post(
+            '/custom', data='a\nb', content_type='text/plain')
         assert response.status_code == 400
 
 
