@@ -22,5 +22,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
+      - name: Lint
+        run: python -m flake8
+
       - name: Run tests
         run: python -m pytest
