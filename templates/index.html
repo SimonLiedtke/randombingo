@@ -49,6 +49,8 @@ $(document).ready(function() {
     // allow dropping text files onto the web page
     var myDropzone = new Dropzone("body", {
         url: "/file-upload",
+        clickable: false,  // clicking empty page areas must not open a file dialog
+        parallelUploads: 1,  // several dropped files: the last one wins, deterministically
         acceptedFiles: ".txt,.csv",
         maxFilesize: 16,  // MB, same limit as the server
         dictInvalidFileType: "Nur .txt- und .csv-Dateien sind erlaubt.",
@@ -57,6 +59,10 @@ $(document).ready(function() {
     myDropzone.on("success", function(file, response) {
         showError("");
         refreshTable(response);
+    });
+    // previews are hidden, so don't keep finished files around
+    myDropzone.on("complete", function(file) {
+        myDropzone.removeFile(file);
     });
     // keep the current table and tell the user why the file was refused
     myDropzone.on("error", function(file, message) {
