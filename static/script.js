@@ -1,16 +1,14 @@
 function table2html(tableData) {
-    var s = "<table class=scrolling-wrapper-flexbox>";
-    var tdTag;
+    // build the DOM with .text() so values are never parsed as HTML
+    var $table = $("<table>").addClass("scrolling-wrapper-flexbox");
     for (let row of tableData) {
-        s += "<tr>";
+        var $tr = $("<tr>").appendTo($table);
         for (let value of row) {
-            tdTag = value == "[BLANK]" ? "<td class=blank>" : "<td>";
-            s += tdTag + value + "</td>";
+            $("<td>").text(value).toggleClass("blank", value == "[BLANK]")
+                .appendTo($tr);
         }
-        s += "</tr>";
     }
-    s += "</table>";
-    return s;
+    return $table;
 }
 
 function getCurrentTableData() {
@@ -25,5 +23,5 @@ function refreshTable(newTable) {
     // remove <table> if it exists
     $("table").remove();
     // create new table after main div
-    $(table2html(newTable)).appendTo("#main");
+    table2html(newTable).appendTo("#main");
 }
