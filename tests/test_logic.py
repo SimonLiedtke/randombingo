@@ -27,7 +27,8 @@ def test_missing_cells_are_none():
 
 
 def test_values_are_stripped_and_empty_ones_dropped():
-    grid = list(bingo_from_iterable([' a\n', 'b\r', '', '   ', None, 'c', 'd']))
+    values = [' a\n', 'b\r', '', '   ', None, 'c', 'd']
+    grid = list(bingo_from_iterable(values))
     flat = [cell for row in grid for cell in row]
     assert sorted(flat) == ['a', 'b', 'c', 'd']
 
