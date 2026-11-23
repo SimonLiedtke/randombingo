@@ -20,22 +20,7 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
-      - name: Check syntax
-        run: python -m compileall -q web.py logic.py
-
-      - name: Smoke test
-        run: |
-          python - <<'PY'
-          from web import app
-
-          client = app.test_client()
-          assert client.get('/').status_code == 200
-
-          response = client.post('/custom', json={'values': list('abcd')})
-          assert response.status_code == 200, response.data
-          assert len(response.get_json()) == 2
-
-          assert client.post('/custom', json={'values': 'x'}).status_code == 400
-          PY
+      - name: Run tests
+        run: python -m pytest
