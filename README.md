@@ -21,10 +21,11 @@ pip install -r requirements.txt
 
 Then open http://localhost:5000.
 
-## Tests
+## Tests and linting
 
 ```sh
 pip install -r requirements-dev.txt
+python -m flake8
 python -m pytest
 ```
 
