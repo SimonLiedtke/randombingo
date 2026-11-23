@@ -1,4 +1,3 @@
-import io
 import os.path
 
 from flask import Flask, request, render_template, jsonify
@@ -21,6 +20,17 @@ def allowed_file(filename):
     return '.' in filename and ext.lower() in ALLOWED_EXTENSIONS
 
 
+def decode_text(data):
+    """Decode uploaded bytes: UTF-8 (BOM allowed), else Windows-1252.
+
+    Windows-1252 is what e.g. Excel writes for German umlauts in CSV files.
+    """
+    try:
+        return data.decode('utf-8-sig')
+    except UnicodeDecodeError:
+        return data.decode('cp1252', errors='replace')
+
+
 @app.route('/')
 def index():
     return render_template('index.html', config=app.config)
@@ -40,8 +50,6 @@ def bingo_by_uploaded_file():
     if file and allowed_file(file.filename):
         # read the upload straight from the request stream: nothing is
         # written to disk, so concurrent uploads can't collide
-        with io.TextIOWrapper(file.stream, encoding='utf-8-sig',
-                              errors='replace') as fp:
-            values = list(bingo_from_iterable(fp))
-        return jsonify(values)
+        text = decode_text(file.stream.read())
+        return jsonify(list(bingo_from_iterable(text.splitlines())))
     return jsonify([])
