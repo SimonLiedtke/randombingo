@@ -38,7 +38,11 @@ def index():
 
 @app.route('/custom', methods=['POST'])
 def custom_bingo():
-    values = request.form.getlist('values[]')
+    data = request.get_json(silent=True)
+    values = data.get('values') if isinstance(data, dict) else None
+    if not isinstance(values, list) or not all(
+            isinstance(value, str) for value in values):
+        return jsonify(error='Erwartet wird eine Liste von Werten.'), 400
     return jsonify(list(bingo_from_iterable(values)))
 
 

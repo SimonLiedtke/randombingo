@@ -29,6 +29,22 @@ function refreshTable(newTable) {
 }
 
 
+function postValues(values) {
+    // JSON instead of a form: no form-size limit for big tables
+    $.ajax({
+        url: "/custom",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({values: values}),
+        dataType: "json"
+    }).done(function(table) {
+        showError("");
+        refreshTable(table);
+    }).fail(function() {
+        showError("Das Bingofeld konnte nicht erzeugt werden.");
+    });
+}
+
 function showError(message) {
     $("#error").text(message);
 }

@@ -11,7 +11,7 @@
 $(document).ready(function() {
     function generateBingo() {
         var values = $("#bingovalues").val().split("\n");
-        $.post("/custom", {"values": values}, refreshTable);
+        postValues(values);
         dialog.dialog("close");
     }
 
@@ -43,7 +43,7 @@ $(document).ready(function() {
     });
 
     $("#shuffle").button().on("click", function() {
-        $.post("/custom", {"values": getCurrentTableData()}, refreshTable);
+        postValues(getCurrentTableData());
     });
 
     // allow dropping text files onto the web page
