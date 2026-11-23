@@ -47,9 +47,20 @@ $(document).ready(function() {
     });
 
     // allow dropping text files onto the web page
-    var myDropzone = new Dropzone("body", { url: "/file-upload" });
+    var myDropzone = new Dropzone("body", {
+        url: "/file-upload",
+        acceptedFiles: ".txt,.csv",
+        maxFilesize: 16,  // MB, same limit as the server
+        dictInvalidFileType: "Nur .txt- und .csv-Dateien sind erlaubt.",
+        dictFileTooBig: "Die Datei ist zu groß (maximal 16 MB)."
+    });
     myDropzone.on("success", function(file, response) {
+        showError("");
         refreshTable(response);
+    });
+    // keep the current table and tell the user why the file was refused
+    myDropzone.on("error", function(file, message) {
+        showError(message.error || message);
     });
 });
 </script>
@@ -68,4 +79,5 @@ $(document).ready(function() {
   <h1>{{ config.title }}</h1>
   <button id=add>Bingowerte eintragen</button>
   <button id=shuffle>Eingetragene Werte durchmischen</button>
+  <p id=error role=alert></p>
 </div>

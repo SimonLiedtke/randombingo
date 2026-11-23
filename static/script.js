@@ -27,3 +27,8 @@ function refreshTable(newTable) {
     // create new table after main div
     table2html(newTable).appendTo("#main");
 }
+
+
+function showError(message) {
+    $("#error").text(message);
+}

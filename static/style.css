@@ -60,6 +60,11 @@ td.blank {
 
 /*******************************************************/
 
+#error {
+    color: #a00;
+    min-height: 1.2em;
+}
+
 .dz-preview {
     display: none;
 }

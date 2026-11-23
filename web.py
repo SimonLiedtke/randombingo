@@ -42,14 +42,19 @@ def custom_bingo():
     return jsonify(list(bingo_from_iterable(values)))
 
 
+@app.errorhandler(413)
+def too_large(error):
+    return jsonify(error='Die Eingabe ist zu groß (maximal 16 MB).'), 413
+
+
 @app.route('/file-upload', methods=['POST'])
 def bingo_by_uploaded_file():
-    file = request.files['file']
-    if file.filename == '':
-        return ''
-    if file and allowed_file(file.filename):
-        # read the upload straight from the request stream: nothing is
-        # written to disk, so concurrent uploads can't collide
-        text = decode_text(file.stream.read())
-        return jsonify(list(bingo_from_iterable(text.splitlines())))
-    return jsonify([])
+    file = request.files.get('file')
+    if file is None or file.filename == '':
+        return jsonify(error='Keine Datei übermittelt.'), 400
+    if not allowed_file(file.filename):
+        return jsonify(error='Nur .txt- und .csv-Dateien sind erlaubt.'), 415
+    # read the upload straight from the request stream: nothing is
+    # written to disk, so concurrent uploads can't collide
+    text = decode_text(file.stream.read())
+    return jsonify(list(bingo_from_iterable(text.splitlines())))
