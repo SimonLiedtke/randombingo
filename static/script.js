@@ -4,8 +4,9 @@ function table2html(tableData) {
     for (let row of tableData) {
         var $tr = $("<tr>").appendTo($table);
         for (let value of row) {
-            $("<td>").text(value).toggleClass("blank", value == "[BLANK]")
-                .appendTo($tr);
+            // null marks a padding cell without a value
+            $("<td>").text(value === null ? "" : value)
+                .toggleClass("blank", value === null).appendTo($tr);
         }
     }
     return $table;
@@ -13,7 +14,8 @@ function table2html(tableData) {
 
 function getCurrentTableData() {
     var data = [];
-    $("td").each(function(index) {
+    // padding cells (.blank) carry no value, so don't send them back
+    $("td:not(.blank)").each(function(index) {
         data.push($(this).text());
     })
     return data;
